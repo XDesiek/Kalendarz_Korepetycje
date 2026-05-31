@@ -2,7 +2,7 @@ QT       += core widgets
 
 TARGET   = WeeklyCalendar
 TEMPLATE = app
-CONFIG  += c++17
+CONFIG += c++17 console
 
 HEADERS += \
     LessonInfo.h \

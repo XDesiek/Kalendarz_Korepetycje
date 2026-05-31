@@ -5,12 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-int main(int argc, char *argv[]);
-// lowkey jakies gowno zeby to wszystko dzialalo
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR lpCmdLine, int)
-{
-    return main(__argc, __argv);
-}
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
