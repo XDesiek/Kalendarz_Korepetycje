@@ -15,12 +15,7 @@
 #include <QSizePolicy>
 #include <QVBoxLayout>
 #include <QFrame>
-#include <LessonTile.h>
-
-
-// ════════════════════════════════════════════════════════════════════════════
-//  WeeklyCalendarWidget
-// ════════════════════════════════════════════════════════════════════════════
+#include "LessonTile.h"
 
 WeeklyCalendarWidget::WeeklyCalendarWidget(QWidget *parent)
     : QWidget(parent)
@@ -39,7 +34,7 @@ WeeklyCalendarWidget::WeeklyCalendarWidget(QWidget *parent)
 void WeeklyCalendarWidget::setHourRange(int startHour, int endHour)
 {
     m_startHour = startHour;
-    m_endHour   = endHour;
+    m_endHour = endHour;
     buildGrid();
 }
 
@@ -84,10 +79,8 @@ void WeeklyCalendarWidget::buildGrid()
     const int days  = m_dayNames.size();
     const int hours = m_endHour - m_startHour;
 
-    // Corner
     m_layout->addWidget(new QLabel, 0, 0);
 
-    // Day headers
     for (int d = 0; d < days; ++d) {
         auto *hdr = new QLabel(m_dayNames[d]);
         hdr->setAlignment(Qt::AlignCenter);
@@ -95,7 +88,6 @@ void WeeklyCalendarWidget::buildGrid()
         m_layout->setColumnStretch(d + 1, 1);
     }
 
-    // Hour rows
     for (int h = 0; h < hours; ++h) {
         int absHour = m_startHour + h;
 
@@ -106,14 +98,14 @@ void WeeklyCalendarWidget::buildGrid()
 
         for (int d = 0; d < days; ++d) {
             auto *tile = new LessonTile(d, absHour, m_grid);
-            auto  key  = QPair<int,int>(d, absHour);
+            auto key = QPair<int,int>(d, absHour);
             m_tiles[key] = tile;
 
             connect(tile, &LessonTile::lessonChanged,
                     this, &WeeklyCalendarWidget::lessonEdited);
 
             m_layout->addWidget(tile, h + 1, d + 1);
-            m_layout->setRowMinimumHeight(h + 1, 56);
+            m_layout->setRowMinimumHeight(h + 1, 70);
         }
     }
 

@@ -1,3 +1,5 @@
 build/
 .qtcreator/
 README.md
+CMakeLists.txt.user
+CMakeLists.txt

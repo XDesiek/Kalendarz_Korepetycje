@@ -3,11 +3,11 @@
 LessonStudent::LessonStudent(int id, int studentID, int paymentID,
                              time_t timestamp, int duration)
 {
-    this->id        = id;
+    this->id = id;
     this->studentID = studentID;
     this->paymentID = paymentID;
     this->timestamp = timestamp;
-    this->duration  = duration;
+    this->duration = duration;
 }
 
 QString LessonStudent::getText()
@@ -22,6 +22,5 @@ time_t LessonStudent::getTime()
 
 bool LessonStudent::checkIfPaid()
 {
-    // paymentID == 0 oznacza brak przypisanej płatności
     return paymentID != 0;
 }

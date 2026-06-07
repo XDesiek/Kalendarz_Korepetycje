@@ -8,14 +8,23 @@ public:
     LessonStudent(int id, int studentID, int paymentID,
                   time_t timestamp, int duration);
 
-    QString getText() override;
-    time_t  getTime() override;
+    LessonStudent() {}
 
+    QString getText() override;
+    time_t getTime() override;
     bool checkIfPaid();
 
+    //Funkcje służące odczytu potrzebnych danych
+    int getStudentId() const { return studentID; }
+    int getPaymentId() const { return paymentID; }
+
+    //Funkcje służące wpisywania nowych danych do lekcji
+    void setStudentId(int v) { studentID = v; }
+    void setPaymentId(int v) { paymentID = v; }
+
 private:
-    int studentID;
-    int paymentID;
+    int studentID = 0;
+    int paymentID = 0;
 };
 
 #endif

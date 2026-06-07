@@ -10,9 +10,6 @@
 
 
 
-
-// ─── Main Widget ─────────────────────────────────────────────────────────────
-
 class WeeklyCalendarWidget : public QWidget {
     Q_OBJECT
 public:
@@ -30,14 +27,14 @@ signals:
 private:
     void buildGrid();
 
-    QScrollArea  *m_scroll   = nullptr;
-    QWidget      *m_grid     = nullptr;
-    QGridLayout  *m_layout   = nullptr;
+    QScrollArea *m_scroll = nullptr;
+    QWidget *m_grid = nullptr;
+    QGridLayout *m_layout = nullptr;
 
-    int          m_startHour = 7;
-    int          m_endHour   = 21;
+    int m_startHour = 7;
+    int m_endHour = 21;
 
-    QStringList  m_dayNames  = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+    QStringList m_dayNames = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 
     QMap<QPair<int,int>, LessonTile*> m_tiles;
 };
