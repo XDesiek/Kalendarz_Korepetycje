@@ -31,7 +31,7 @@ public:
     const std::vector<std::shared_ptr<ILesson>>& getLessons() const { return m_lessons;  }
 
     void addStudent(const Student &student);
-    void addPayment(const Payment &payment);
+    bool addPayment(const Payment &payment);
     void addLesson(std::shared_ptr<ILesson> lesson);
 
     void removeStudent(int studentId);

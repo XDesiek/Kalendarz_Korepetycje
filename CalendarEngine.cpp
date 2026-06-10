@@ -55,7 +55,23 @@ void CalendarEngine::addStudent(const Student &student) {
     m_storage.saveStudents(m_students);
 }
 
-void CalendarEngine::addPayment(const Payment &payment) {
+bool CalendarEngine::addPayment(const Payment &payment) {
+
+    // walidacja — czy lekcja istnieje i czy nie jest już opłacona
+    for (int lessonId : payment.getLessonIds()) {
+        bool found = false;
+        for (auto &lesson : m_studentLessons) {
+            auto ls = std::dynamic_pointer_cast<LessonStudent>(lesson);
+            if (ls && ls->getId() == lessonId) {
+                found = true;
+                if (ls->checkIfPaid()) return false; // już opłacona
+                break;
+            }
+        }
+        if (!found) return false; // lekcja o tym ID nie istnieje
+    }
+
+    // wszystko OK — zapisz płatność
     m_payments.push_back(payment);
     m_storage.savePayments(m_payments);
 
@@ -72,6 +88,7 @@ void CalendarEngine::addPayment(const Payment &payment) {
     m_storage.saveStudentLessons(m_studentLessons);
     rebuildSchedule();
     updateWidget();
+    return true;
 }
 
 

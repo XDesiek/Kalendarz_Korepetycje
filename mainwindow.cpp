@@ -242,7 +242,13 @@ void MainWindow::on_btnDodajPlatnosc_clicked()
     Payment nowaPlatnosc(idPlatnosci, kwota, QDate::currentDate(), metoda);
     nowaPlatnosc.addLessonId(idOpłacanejLekcji);
 
-    m_engine.addPayment(nowaPlatnosc);
+    if (!m_engine.addPayment(nowaPlatnosc)) {
+        QMessageBox::warning(this, "Błąd",
+                             "Lekcja o podanym ID nie istnieje lub jest już opłacona!");
+        return;
+    }
+
+    QMessageBox::information(this, "Sukces", "Płatność została zaksięgowana!");
 
     ui->inputKwota->clear();
     ui->inputMetoda->clear();
