@@ -91,23 +91,6 @@ bool CalendarEngine::addPayment(const Payment &payment) {
     return true;
 }
 
-
-void CalendarEngine::addLesson(std::shared_ptr<ILesson> lesson) {
-    if (std::dynamic_pointer_cast<LessonStudent>(lesson)) //sprawdza jaki typ lekcji funkcja dostaje
-    {
-        m_studentLessons.push_back(lesson);
-        m_storage.saveStudentLessons(m_studentLessons);
-    }
-    else if (std::dynamic_pointer_cast<LessonUSOS>(lesson))
-    {
-        m_usosLessons.push_back(lesson);
-        m_storage.saveUsosLessons(m_usosLessons);
-    }
-
-    m_lessons = m_merger.mergeAndSort(m_studentLessons, m_usosLessons);
-    rebuildSchedule();
-    updateWidget();
-}
 bool CalendarEngine::addLesson(std::shared_ptr<ILesson> lesson) {
 
     // sprawdź konflikt ze wszystkimi istniejącymi lekcjami
