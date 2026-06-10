@@ -11,6 +11,7 @@ struct LessonInfo
     QString subject;
     QString teacher;
     QString room;
+    int     durationHours = 1;
     QColor  color = QColor(240, 240, 240);
 
     bool isEmpty() const

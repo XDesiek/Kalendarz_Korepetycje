@@ -268,21 +268,23 @@ std::vector<std::shared_ptr<LessonUSOS>> CSVStorage::loadFromICS(const QString &
             int day   = dt.mid(6, 2).toInt();
             int hour  = dt.mid(9, 2).toInt();
             int min   = dt.mid(11, 2).toInt();
-            // zaokrąglenie do pełnej godziny
-            if (min >= 30) hour++;
-
-            // czas trwania
+            // czas trwania — obliczamy z surowych (niezaokrąglonych) czasów
             int durationMin = 60; // domyślnie
             if (!dtend.isEmpty()) {
                 QString de = dtend;
                 if (de.contains(":")) de = de.section(":", 1);
                 int ehour = de.mid(9, 2).toInt();
                 int emin  = de.mid(11, 2).toInt();
-                int startTotalMin = hour * 60 + min;
-                int endTotalMin   = ehour * 60 + emin;
-                durationMin = endTotalMin - startTotalMin;
-                if (durationMin <= 0) durationMin = 60;
+                int rawStartMin = hour * 60 + min;
+                int rawEndMin   = ehour * 60 + emin;
+                int rawDuration = rawEndMin - rawStartMin;
+                if (rawDuration <= 0) rawDuration = 60;
+                // zaokrąglenie czasu trwania do pełnej godziny w górę
+                durationMin = ((rawDuration + 59) / 60) * 60;
             }
+
+            // zaokrąglenie godziny rozpoczęcia do pełnej godziny
+            if (min >= 30) hour++;
 
             // wyciągnij salę z DESCRIPTION
             QString room;

@@ -89,11 +89,13 @@ void MainWindow::setSchedule(WeekSchedule &schedule)
                         info.room  = "Nieopłacone";
                         info.color = QColor(220, 80, 80);   // czerwony
                     }
+                    info.durationHours = qMax(1, ls->getDuration() / 60);
                 } else if (auto lu = dynamic_cast<LessonUSOS*>(entry)) {
                     info.subject = lu->getSubject();
                     info.teacher = "Grupa: " + QString::number(lu->getGroupId());
                     info.room    = "Sala: " + lu->getRoomNumber();
                     info.color   = QColor(220, 200, 80);    // żółty
+                    info.durationHours = qMax(1, lu->getDuration() / 60);
                 } else {
                     info.subject = entry->getText();
                 }
