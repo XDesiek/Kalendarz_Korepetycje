@@ -94,7 +94,7 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLineEdit" name="inputGodzina">
+   <widget class="QComboBox" name="comboGodzina">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -102,9 +102,6 @@
       <width>113</width>
       <height>26</height>
      </rect>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
    <widget class="QComboBox" name="comboUczen">

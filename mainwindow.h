@@ -19,6 +19,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void odswiezListeUczniow();
+    void wypelnijGodziny();
     void setSchedule(WeekSchedule &schedule) override;
     void update() override;
     ICalendarEntry* getSelectedEntry() override;

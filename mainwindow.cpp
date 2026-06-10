@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_engine.setView(this);
     m_engine.init(".");
     odswiezListeUczniow();
+    wypelnijGodziny();
 }
 //destrultotr
 MainWindow::~MainWindow()
@@ -121,28 +122,22 @@ void MainWindow::odswiezListeUczniow() {
         ui->comboUczen->addItem(s.getFullName(), s.getId());
     }
 }
+void MainWindow::wypelnijGodziny() {
+    ui->comboGodzina->clear();
+    for (int h = 7; h <= 20; ++h) {
+        ui->comboGodzina->addItem(QString("%1:00").arg(h), h);
+    }
+}
 void MainWindow::on_btnDodajZajecia_clicked()
 {
     QDate dataZajec = ui->inputData->date();
-    QString godzinaStr = ui->inputGodzina->text().trimmed();
-
-    if (godzinaStr.isEmpty()) {
-        QMessageBox::warning(this, "Błąd", "Podaj godzinę zajęć!");
-        return;
-    }
 
     if (ui->comboUczen->count() == 0) {
         QMessageBox::warning(this, "Błąd", "Brak uczniów w bazie. Najpierw dodaj ucznia!");
         return;
     }
 
-    bool okGodzina;
-    int godzina = godzinaStr.toInt(&okGodzina);
-
-    if (!okGodzina || godzina < 7 || godzina > 20) {
-        QMessageBox::warning(this, "Błąd", "Godzina musi być z zakresu 7–20!");
-        return;
-    }
+    int godzina = ui->comboGodzina->currentData().toInt();
 
     // pobierz ID z danych przypisanych do wybranej pozycji w dropdownie
     int idUcznia = ui->comboUczen->currentData().toInt();
@@ -160,8 +155,6 @@ void MainWindow::on_btnDodajZajecia_clicked()
         );
 
     m_engine.addLesson(noweKorepetycje);
-
-    ui->inputGodzina->clear();
 
     QMessageBox::information(this, "Sukces", "Dodano nowe zajęcia do kalendarza!");
 }
