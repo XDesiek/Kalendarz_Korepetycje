@@ -5,6 +5,7 @@
 #include "Student.h"
 #include "Payment.h"
 
+#include <QListWidget>
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QDateTime>
