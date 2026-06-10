@@ -7,13 +7,13 @@ time_t ILesson::getEndTime()
 
 bool ILesson::overlaps(ICalendarEntry &other)
 {
-    ILesson *otherLesson = dynamic_cast<ILesson*>(&other);
+    ILesson *otherLesson = dynamic_cast<ILesson*>(&other); //sprawdza czy wpis z kalendarza jest lekcją
     if (!otherLesson) return false;
 
-    time_t thisStart  = getTime();
-    time_t thisEnd    = getEndTime();
+    time_t thisStart = getTime();
+    time_t thisEnd = getEndTime();
     time_t otherStart = otherLesson->getTime();
-    time_t otherEnd   = otherLesson->getEndTime();
+    time_t otherEnd = otherLesson->getEndTime();
 
-    return thisStart < otherEnd && otherStart < thisEnd;
+    return thisStart < otherEnd && otherStart < thisEnd; //zwraca czy lekcje się na siebie nakładają
 }

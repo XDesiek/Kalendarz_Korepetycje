@@ -11,8 +11,38 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
 add_executable(WeeklyCalendar
     main.cpp
-    WeeklyCalendarWidget.cpp
-    WeeklyCalendarWidget.h
+        CalendarEngine.cpp
+        DaySchedule.cpp
+        ILesson.cpp
+        LessonInfo.cpp
+        LessonStudent.cpp
+        LessonTile.cpp
+        LessonUSOS.cpp
+        Payment.cpp
+        Student.cpp
+        WeeklyCalendarWidget.cpp
+        WeekSchedule.cpp
+        CSVStorage.cpp
+        lessonmerger.cpp
+
+        CSVStorage.cpp
+        # Pliki nagłówkowe (.h)
+        CalendarEngine.h
+        DaySchedule.h
+        ICalendarEntry.h
+        ICalendarView.h
+        ILesson.h
+        LessonInfo.h
+        LessonStudent.h
+        LessonTile.h
+        LessonUSOS.h
+        Payment.h
+        Student.h
+        WeeklyCalendarWidget.h
+        CSVStorage.h
+        WeekSchedule.h
+        lessonmerger.h
+
 )
 
 target_link_libraries(WeeklyCalendar PRIVATE Qt6::Core Qt6::Widgets)

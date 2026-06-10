@@ -1,7 +1,7 @@
 #include "DaySchedule.h"
 
 DaySchedule::DaySchedule(time_t date)
-    : date(date)
+    : date(date) //stworzenie listy inicjalizacyjnej
 {}
 
 void DaySchedule::addEntry(ICalendarEntry *entry)
@@ -12,8 +12,7 @@ void DaySchedule::addEntry(ICalendarEntry *entry)
 ICalendarEntry* DaySchedule::getEntry(int hour)
 {
     for (ICalendarEntry *entry : dayEntries) {
-        tm *t = localtime(&date);
-        // porównaj godzinę wpisu z szukaną
+        // tm *t = localtime(&date);
         time_t entryTime = entry->getTime();
         tm *et = localtime(&entryTime);
         if (et->tm_hour == hour)

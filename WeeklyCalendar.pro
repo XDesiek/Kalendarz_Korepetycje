@@ -6,6 +6,7 @@ CONFIG += c++17 console
 
 HEADERS += \
     LessonInfo.h \
+    LessonMerger.h \
     LessonTile.h \
     WeeklyCalendarWidget.h \
     ICalendarEntry.h \
@@ -17,9 +18,12 @@ HEADERS += \
     Payment.h \
     DaySchedule.h \
     WeekSchedule.h \
-    CalendarEngine.h
+    CalendarEngine.h \
+    CSVStorage.h \
+    mainwindow.h
 
 SOURCES += \
+    LessonMerger.cpp \
     main.cpp \
     LessonInfo.cpp \
     LessonTile.cpp \
@@ -31,4 +35,9 @@ SOURCES += \
     Payment.cpp \
     DaySchedule.cpp \
     WeekSchedule.cpp \
-    CalendarEngine.cpp
+    CalendarEngine.cpp \
+    CSVStorage.cpp \
+    mainwindow.cpp
+
+FORMS += \
+    mainwindow.ui

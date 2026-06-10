@@ -7,14 +7,16 @@
 
 class WeekSchedule {
 public:
-    WeekSchedule(time_t week);
+    WeekSchedule(time_t week = 0);
 
-    void        fillSchedule();
+    void fillSchedule();
     DaySchedule& getDay(int dayIndex);
+
+    time_t getWeekStart() const { return week; }
 
 private:
     std::vector<DaySchedule> days;
-    time_t                   week;
+    time_t week;
 };
 
 #endif

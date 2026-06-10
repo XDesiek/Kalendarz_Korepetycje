@@ -1,7 +1,7 @@
 #include "Payment.h"
 
 Payment::Payment(int id, double amount, const QDate &date, const QString &method)
-    : id(id), amount(amount), date(date), method(method)
+    : id(id), amount(amount), date(date), method(method) //tworzenie listy inicjalizacyjnej
 {}
 
 void Payment::addLessonId(int lessonId)
@@ -16,7 +16,7 @@ bool Payment::verify()
 
 QString Payment::getStatus()
 {
-    if (amount <= 0)    return "unpaid";
-    if (!verify())      return "partial";
+    if (amount <= 0) return "unpaid";
+    if (!verify()) return "partial";
     return "paid";
 }

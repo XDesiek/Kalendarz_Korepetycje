@@ -9,12 +9,12 @@ class DaySchedule {
 public:
     DaySchedule(time_t date);
 
-    void            addEntry(ICalendarEntry *entry);
+    void addEntry(ICalendarEntry *entry);
     ICalendarEntry* getEntry(int hour);
 
 private:
     std::vector<ICalendarEntry*> dayEntries;
-    time_t                       date;
+    time_t date;
 };
 
 #endif

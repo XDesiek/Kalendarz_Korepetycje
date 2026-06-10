@@ -10,6 +10,7 @@
 #include <QMap>
 #include <QPair>
 #include <QWidget>
+#include <QMouseEvent>
 
 // ─── Lesson Tile ─────────────────────────────────────────────────────────────
 

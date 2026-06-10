@@ -10,7 +10,7 @@ public:
 
     virtual QString getText() = 0;
     virtual time_t  getTime() = 0;
-    virtual bool    overlaps(ICalendarEntry &other) = 0;
+    virtual bool overlaps(ICalendarEntry &other) = 0;
 };
 
 #endif

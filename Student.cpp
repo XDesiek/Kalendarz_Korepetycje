@@ -7,7 +7,7 @@ Student::Student(int id, const QString &firstName, const QString &lastName,
       phone(phone), communicator(communicator), notes(notes)
 {}
 
-QString Student::getFullName()
+QString Student::getFullName() const
 {
     return firstName + " " + lastName;
 }
