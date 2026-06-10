@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_engine.init(".");
     odswiezListeUczniow();
     wypelnijGodziny();
+    odswiezListeLekcjiDoOplaty();
 }
 //destrultotr
 MainWindow::~MainWindow()
@@ -122,6 +123,30 @@ void MainWindow::odswiezListeUczniow() {
         ui->comboUczen->addItem(s.getFullName(), s.getId());
     }
 }
+void MainWindow::odswiezListeLekcjiDoOplaty() {
+    ui->listLekcjiDoOplaty->clear();
+    for (const auto &lesson : m_engine.getLessons()) {
+        auto ls = std::dynamic_pointer_cast<LessonStudent>(lesson);
+        if (!ls || ls->checkIfPaid()) continue; // pomijamy opłacone i USOS
+
+        // znajdź imię ucznia
+        QString nazwa = "ID: " + QString::number(ls->getId());
+        for (const Student &s : m_engine.getStudents()) {
+            if (s.getId() == ls->getStudentId()) {
+                // zamień timestamp na czytelną datę
+                QDateTime dt = QDateTime::fromSecsSinceEpoch(ls->getTimestamp());
+                nazwa = s.getFullName() + " — " + dt.toString("ddd dd.MM HH:mm");
+                break;
+            }
+        }
+
+        QListWidgetItem *item = new QListWidgetItem(nazwa);
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+        item->setCheckState(Qt::Unchecked);
+        item->setData(Qt::UserRole, ls->getId()); // przechowuj ID lekcji
+        ui->listLekcjiDoOplaty->addItem(item);
+    }
+}
 void MainWindow::wypelnijGodziny() {
     ui->comboGodzina->clear();
     for (int h = 7; h <= 20; ++h) {
@@ -207,52 +232,57 @@ void MainWindow::on_btnDodajUcznia_clicked()
 
     QMessageBox::information(this, "Sukces", "Uczeń został pomyślnie dodany!");
     odswiezListeUczniow();
+    odswiezListeLekcjiDoOplaty();
 }
 
 void MainWindow::on_btnDodajPlatnosc_clicked()
 {
-    QString kwotaStr    = ui->inputKwota->text().trimmed();
-    QString metoda = ui->comboMetoda->currentText();
-    QString idLekcjiStr = ui->inputIdLekcjiPlatnosc->text().trimmed();
-
-    if (kwotaStr.isEmpty() || idLekcjiStr.isEmpty()) {
-        QMessageBox::warning(this, "Błąd", "Wszystkie pola w sekcji 'Dodaj Płatność' muszą być wypełnione!");
+    // walidacja kwoty
+    QString kwotaStr = ui->inputKwota->text().trimmed();
+    if (kwotaStr.isEmpty()) {
+        QMessageBox::warning(this, "Błąd", "Podaj kwotę płatności!");
         return;
     }
-
-    bool okKwota, okIdLekcji;
+    bool okKwota;
     double kwota = kwotaStr.toDouble(&okKwota);
-    int idOpłacanejLekcji = idLekcjiStr.toInt(&okIdLekcji);
-
     if (!okKwota || kwota <= 0) {
         QMessageBox::warning(this, "Błąd", "Podaj poprawną kwotę większą od 0 (użyj kropki dla ułamków)!");
         return;
     }
 
-    if (!okIdLekcji || idOpłacanejLekcji <= 0) {
-        QMessageBox::warning(this, "Błąd", "ID opłacanej lekcji musi być poprawną liczbą dodatnią!");
+    // zbierz zaznaczone lekcje
+    QVector<int> zaznaczoneId;
+    for (int i = 0; i < ui->listLekcjiDoOplaty->count(); ++i) {
+        QListWidgetItem *item = ui->listLekcjiDoOplaty->item(i);
+        if (item->checkState() == Qt::Checked) {
+            zaznaczoneId.append(item->data(Qt::UserRole).toInt());
+        }
+    }
+    if (zaznaczoneId.isEmpty()) {
+        QMessageBox::warning(this, "Błąd", "Zaznacz przynajmniej jedną lekcję do opłacenia!");
         return;
     }
 
+    // generuj nowe ID płatności
     int idPlatnosci = 1;
     for (const Payment &p : m_engine.getPayments()) {
         if (p.getId() >= idPlatnosci) idPlatnosci = p.getId() + 1;
     }
 
+    // stwórz płatność i dodaj wszystkie zaznaczone lekcje
+    QString metoda = ui->comboMetoda->currentText();
     Payment nowaPlatnosc(idPlatnosci, kwota, QDate::currentDate(), metoda);
-    nowaPlatnosc.addLessonId(idOpłacanejLekcji);
+    for (int id : zaznaczoneId) {
+        nowaPlatnosc.addLessonId(id);
+    }
 
     if (!m_engine.addPayment(nowaPlatnosc)) {
-        QMessageBox::warning(this, "Błąd",
-                             "Lekcja o podanym ID nie istnieje lub jest już opłacona!");
+        QMessageBox::warning(this, "Błąd", "Jedna z lekcji jest już opłacona!");
         return;
     }
 
-    QMessageBox::information(this, "Sukces", "Płatność została zaksięgowana!");
-
     ui->inputKwota->clear();
-    ui->inputIdLekcjiPlatnosc->clear();
-
+    odswiezListeLekcjiDoOplaty();
     QMessageBox::information(this, "Sukces", "Płatność została zaksięgowana!");
 }
 

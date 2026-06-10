@@ -316,15 +316,15 @@
      <string>ID opłacanej lekcji:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="inputIdLekcjiPlatnosc">
+   <widget class="QListWidget" name="listLekcjiDoOplaty">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>10</x>
       <y>660</y>
-      <width>113</width>
-      <height>26</height>
+      <width>273</width>
+      <height>80</height>
      </rect>
-    </property>
+   </property>
    </widget>
    <widget class="QPushButton" name="btnListaUczniow">
     <property name="geometry">
