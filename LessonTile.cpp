@@ -43,6 +43,16 @@ void LessonTile::paintEvent(QPaintEvent *)
     QPainter p(this);
     QRect r = rect();
 
+    // wypełnienie tłem
+    if (!m_lesson.isEmpty()) {
+        QColor bg = m_hovered
+                        ? m_lesson.color.lighter(115)  // rozjaśnij przy hover
+                        : m_lesson.color;
+        p.fillRect(r, bg);
+    } else {
+        p.fillRect(r, Qt::transparent);
+    }
+
     p.drawRect(r.adjusted(0, 0, -1, -1));
 
     if (!m_lesson.isEmpty()) {

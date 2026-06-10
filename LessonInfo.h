@@ -1,7 +1,9 @@
 #ifndef LESSONLNFO_H
 #define LESSONLNFO_H
 
-#include "qobject.h"
+#include <QString>
+#include <QColor>
+
 class LessonTile;
 
 struct LessonInfo
@@ -9,6 +11,7 @@ struct LessonInfo
     QString subject;
     QString teacher;
     QString room;
+    QColor  color = QColor(240, 240, 240);
 
     bool isEmpty() const
     {

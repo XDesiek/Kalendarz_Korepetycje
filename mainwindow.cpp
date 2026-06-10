@@ -74,7 +74,7 @@ void MainWindow::setSchedule(WeekSchedule &schedule)
 
                 if (auto ls = dynamic_cast<LessonStudent*>(entry)) {
                     info.subject = "Korepetycje";
-                    QString studentName = "Uczeń ID: " + QString::number(ls->getStudentId()); // fallback
+                    QString studentName = "Uczeń ID: " + QString::number(ls->getStudentId());
                     for (const Student &s : m_engine.getStudents()) {
                         if (s.getId() == ls->getStudentId()) {
                             studentName = s.getFullName();
@@ -82,11 +82,18 @@ void MainWindow::setSchedule(WeekSchedule &schedule)
                         }
                     }
                     info.teacher = studentName;
-                    info.room    = (ls->checkIfPaid() ? "Opłacone" : "Nieopłacone");
+                    if (ls->checkIfPaid()) {
+                        info.room  = "Opłacone";
+                        info.color = QColor(120, 200, 120); // zielony
+                    } else {
+                        info.room  = "Nieopłacone";
+                        info.color = QColor(220, 80, 80);   // czerwony
+                    }
                 } else if (auto lu = dynamic_cast<LessonUSOS*>(entry)) {
                     info.subject = lu->getSubject();
                     info.teacher = "Grupa: " + QString::number(lu->getGroupId());
                     info.room    = "Sala: " + lu->getRoomNumber();
+                    info.color   = QColor(220, 200, 80);    // żółty
                 } else {
                     info.subject = entry->getText();
                 }
