@@ -12,6 +12,7 @@
 #include <QDialog>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
