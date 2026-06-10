@@ -58,6 +58,20 @@ void CalendarEngine::addStudent(const Student &student) {
 void CalendarEngine::addPayment(const Payment &payment) {
     m_payments.push_back(payment);
     m_storage.savePayments(m_payments);
+
+    // powiąż lekcje z tą płatnością
+    for (int lessonId : payment.getLessonIds()) {
+        for (auto &lesson : m_studentLessons) {
+            auto ls = std::dynamic_pointer_cast<LessonStudent>(lesson);
+            if (ls && ls->getId() == lessonId) {
+                ls->setPaymentId(payment.getId());
+            }
+        }
+    }
+
+    m_storage.saveStudentLessons(m_studentLessons);
+    rebuildSchedule();
+    updateWidget();
 }
 
 
