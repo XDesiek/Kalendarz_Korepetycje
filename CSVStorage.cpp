@@ -284,13 +284,24 @@ std::vector<std::shared_ptr<LessonUSOS>> CSVStorage::loadFromICS(const QString &
                 if (durationMin <= 0) durationMin = 60;
             }
 
-            // wyciągnij salę z DESCRIPTION (pierwsza linia po "Sala: ")
+            // wyciągnij salę z DESCRIPTION
             QString room;
+            int groupId = 0;
+
             for (const QString &descLine : description.split("\\n")) {
                 QString dl = descLine.trimmed();
                 if (dl.startsWith("Sala:")) {
                     room = dl.mid(5).trimmed();
-                    break;
+                    // NIE rób break — kontynuuj, żeby dojść do URL-a
+                }
+                // wyciągnij gr_nr z URL-a w DESCRIPTION
+                if (dl.contains("gr_nr=")) {
+                    int idx = dl.indexOf("gr_nr=");
+                    QString after = dl.mid(idx + 6); // pomiń "gr_nr="
+                    // gr_nr kończy się na "&" albo na końcu stringa
+                    int end = after.indexOf('&');
+                    QString grNrStr = (end != -1) ? after.left(end) : after;
+                    groupId = grNrStr.toInt();
                 }
             }
 
@@ -318,7 +329,7 @@ std::vector<std::shared_ptr<LessonUSOS>> CSVStorage::loadFromICS(const QString &
             lesson->setDuration(durationMin);
             lesson->setSubject(subjectName);
             lesson->setRoomNumber(room);
-            lesson->setGroupId(0);
+            lesson->setGroupId(groupId);
             result.push_back(lesson);
             continue;
         }
