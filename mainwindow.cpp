@@ -212,10 +212,10 @@ void MainWindow::on_btnDodajUcznia_clicked()
 void MainWindow::on_btnDodajPlatnosc_clicked()
 {
     QString kwotaStr    = ui->inputKwota->text().trimmed();
-    QString metoda      = ui->inputMetoda->text().trimmed();
+    QString metoda = ui->comboMetoda->currentText();
     QString idLekcjiStr = ui->inputIdLekcjiPlatnosc->text().trimmed();
 
-    if (kwotaStr.isEmpty() || metoda.isEmpty() || idLekcjiStr.isEmpty()) {
+    if (kwotaStr.isEmpty() || idLekcjiStr.isEmpty()) {
         QMessageBox::warning(this, "Błąd", "Wszystkie pola w sekcji 'Dodaj Płatność' muszą być wypełnione!");
         return;
     }
@@ -251,7 +251,6 @@ void MainWindow::on_btnDodajPlatnosc_clicked()
     QMessageBox::information(this, "Sukces", "Płatność została zaksięgowana!");
 
     ui->inputKwota->clear();
-    ui->inputMetoda->clear();
     ui->inputIdLekcjiPlatnosc->clear();
 
     QMessageBox::information(this, "Sukces", "Płatność została zaksięgowana!");
