@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_engine.setView(this);
     m_engine.init(".");
+    odswiezListeUczniow();
 }
 //destrultotr
 MainWindow::~MainWindow()
@@ -69,7 +70,14 @@ void MainWindow::setSchedule(WeekSchedule &schedule)
 
                 if (auto ls = dynamic_cast<LessonStudent*>(entry)) {
                     info.subject = "Korepetycje";
-                    info.teacher = "Uczeń ID: " + QString::number(ls->getStudentId());
+                    QString studentName = "Uczeń ID: " + QString::number(ls->getStudentId()); // fallback
+                    for (const Student &s : m_engine.getStudents()) {
+                        if (s.getId() == ls->getStudentId()) {
+                            studentName = s.getFullName();
+                            break;
+                        }
+                    }
+                    info.teacher = studentName;
                     info.room    = (ls->checkIfPaid() ? "Opłacone" : "Nieopłacone");
                 } else if (auto lu = dynamic_cast<LessonUSOS*>(entry)) {
                     info.subject = lu->getSubject();
@@ -106,43 +114,38 @@ void MainWindow::on_btnZapisz_clicked()
     QMessageBox::information(this, "Zapisano", "Wszystkie dane są aktualne w plikach CSV.");
 }
 
+void MainWindow::odswiezListeUczniow() {
+    ui->comboUczen->clear();
+    for (const Student &s : m_engine.getStudents()) {
+        // tekst wyświetlany to imię, dane to ID — żeby potem wyciągnąć ID
+        ui->comboUczen->addItem(s.getFullName(), s.getId());
+    }
+}
 void MainWindow::on_btnDodajZajecia_clicked()
 {
     QDate dataZajec = ui->inputData->date();
     QString godzinaStr = ui->inputGodzina->text().trimmed();
-    QString idUczniaStr = ui->inputIdUcznia->text().trimmed();
 
-    if (godzinaStr.isEmpty() || idUczniaStr.isEmpty()) {
-        QMessageBox::warning(this, "Błąd", "Wszystkie pola w sekcji 'Dodaj Zajęcia' muszą być wypełnione!");
+    if (godzinaStr.isEmpty()) {
+        QMessageBox::warning(this, "Błąd", "Podaj godzinę zajęć!");
         return;
     }
 
-    bool okGodzina, okId;
-    int godzina  = godzinaStr.toInt(&okGodzina);
-    int idUcznia = idUczniaStr.toInt(&okId);
+    if (ui->comboUczen->count() == 0) {
+        QMessageBox::warning(this, "Błąd", "Brak uczniów w bazie. Najpierw dodaj ucznia!");
+        return;
+    }
+
+    bool okGodzina;
+    int godzina = godzinaStr.toInt(&okGodzina);
 
     if (!okGodzina || godzina < 7 || godzina > 20) {
-        QMessageBox::warning(this, "Błąd", "Godzina musi być poprawną liczbą z zakresu od 7 do 20!");
+        QMessageBox::warning(this, "Błąd", "Godzina musi być z zakresu 7–20!");
         return;
     }
 
-    if (!okId || idUcznia <= 0) {
-        QMessageBox::warning(this, "Błąd", "ID Ucznia musi być poprawną liczbą dodatnią!");
-        return;
-    }
-
-    bool uczenIstnieje = false;
-    for (const Student &s : m_engine.getStudents()) {
-        if (s.getId() == idUcznia) {
-            uczenIstnieje = true;
-            break;
-        }
-    }
-
-    if (!uczenIstnieje) {
-        QMessageBox::warning(this, "Błąd", "Uczeń o podanym ID nie istnieje w bazie danych! Najpierw dodaj ucznia.");
-        return;
-    }
+    // pobierz ID z danych przypisanych do wybranej pozycji w dropdownie
+    int idUcznia = ui->comboUczen->currentData().toInt();
 
     QDateTime lessonTime(dataZajec, QTime(godzina, 0));
     time_t timestamp = lessonTime.toSecsSinceEpoch();
@@ -159,7 +162,6 @@ void MainWindow::on_btnDodajZajecia_clicked()
     m_engine.addLesson(noweKorepetycje);
 
     ui->inputGodzina->clear();
-    ui->inputIdUcznia->clear();
 
     QMessageBox::information(this, "Sukces", "Dodano nowe zajęcia do kalendarza!");
 }
@@ -207,6 +209,7 @@ void MainWindow::on_btnDodajUcznia_clicked()
     ui->inputKomunikator->clear();
 
     QMessageBox::information(this, "Sukces", "Uczeń został pomyślnie dodany!");
+    odswiezListeUczniow();
 }
 
 void MainWindow::on_btnDodajPlatnosc_clicked()

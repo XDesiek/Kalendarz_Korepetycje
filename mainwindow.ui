@@ -107,7 +107,7 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLineEdit" name="inputIdUcznia">
+   <widget class="QComboBox" name="comboUczen">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -115,9 +115,6 @@
       <width>113</width>
       <height>26</height>
      </rect>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
    <widget class="QLineEdit" name="inputNazwisko">
@@ -218,7 +215,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>ID Ucznia:</string>
+     <string>Uczeń:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
