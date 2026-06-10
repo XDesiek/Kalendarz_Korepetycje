@@ -198,9 +198,23 @@ bool CalendarEngine::addLesson(std::shared_ptr<ILesson> lesson) {
 // }
 
 void CalendarEngine::loadFromFile(const QString &path) {
-    Q_UNUSED(path); // mówi programowi aby nie dawał ostrzeżenia przy buildowaniu o tym, że nie używamy zmiennej
+    auto usosLessons = m_storage.loadFromICS(path);
+
+    int nextId = 1;
+    for (const auto &l : m_usosLessons)
+        if (l->getId() >= nextId) nextId = l->getId() + 1;
+
+    for (auto &l : usosLessons) {
+        l->setId(nextId++);
+        m_usosLessons.push_back(l);
+    }
+
+    m_storage.saveUsosLessons(m_usosLessons);
+    m_lessons = m_merger.mergeAndSort(m_studentLessons, m_usosLessons);
+    rebuildSchedule();
     updateWidget();
 }
+
 
 void CalendarEngine::updateWidget() {
     if (view)

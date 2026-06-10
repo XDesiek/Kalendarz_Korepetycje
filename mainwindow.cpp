@@ -106,10 +106,13 @@ ICalendarEntry* MainWindow::getSelectedEntry()
     return nullptr;
 }
 
-void MainWindow::on_btnWczytajUsos_clicked()
-{
-    m_engine.init(".");
-    QMessageBox::information(this, "Sukces", "Wczytano i odświeżono pliki kalendarza.");
+void MainWindow::on_btnWczytajUsos_clicked() {
+    QString filePath = QFileDialog::getOpenFileName(
+        this, "Wybierz plik ICS z USOS", "", "Kalendarz (*.ics)"
+        );
+    if (filePath.isEmpty()) return;
+    m_engine.loadFromFile(filePath);
+    QMessageBox::information(this, "Sukces", "Wczytano zajęcia z USOS!");
 }
 
 void MainWindow::on_btnZapisz_clicked()

@@ -9,6 +9,7 @@
 #include "Student.h"
 #include "Payment.h"
 #include "ILesson.h"
+#include "LessonUSOS.h"
 
 class CSVStorage {
 public:
@@ -31,6 +32,8 @@ public:
     QString paymentsPath() const {return m_paymentsPath;}
     QString studentLessonsPath() const {return m_studentLessonsPath;}
     QString usosLessonsPath() const {return m_usosLessonsPath; }
+    // dodawanie usosowego kalendarza
+    std::vector<std::shared_ptr<LessonUSOS>> loadFromICS(const QString &filePath);
 
 private:
     QString m_dataDir;
@@ -43,6 +46,8 @@ private:
     static QString escapeField(const QString &field);
     static QString unescapeField(const QString &field);
     static QStringList parseCsvLine(const QString &line);
+    // dodawanie usosowego kalendarza
+    QString parseICSField(const QString &line, const QString &key);
 };
 
 #endif // CSVSTORAGE_H
