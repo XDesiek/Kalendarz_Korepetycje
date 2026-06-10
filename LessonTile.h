@@ -1,7 +1,6 @@
 #ifndef LESSONTILE_H
 #define LESSONTILE_H
 #include "LessonInfo.h"
-#pragma once
 
 #include <QWidget>
 #include <QGridLayout>

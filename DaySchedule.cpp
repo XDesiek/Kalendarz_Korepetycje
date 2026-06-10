@@ -12,10 +12,9 @@ void DaySchedule::addEntry(ICalendarEntry *entry)
 ICalendarEntry* DaySchedule::getEntry(int hour)
 {
     for (ICalendarEntry *entry : dayEntries) {
-        // tm *t = localtime(&date);
         time_t entryTime = entry->getTime();
-        tm *et = localtime(&entryTime);
-        if (et->tm_hour == hour)
+        tm t = *localtime(&entryTime);
+        if (t.tm_hour == hour)
             return entry;
     }
     return nullptr;

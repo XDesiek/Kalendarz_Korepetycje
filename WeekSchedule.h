@@ -9,7 +9,6 @@ class WeekSchedule {
 public:
     WeekSchedule(time_t week = 0);
 
-    void fillSchedule();
     DaySchedule& getDay(int dayIndex);
 
     time_t getWeekStart() const { return week; }

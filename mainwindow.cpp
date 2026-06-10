@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
 
     QVBoxLayout *layout = new QVBoxLayout(ui->calendarContainer);
@@ -30,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_engine.setView(this);
     m_engine.init(".");
 }
-
+//destrultotr
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -38,6 +39,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::setSchedule(WeekSchedule &schedule)
 {
+    // ustawianie głównych parametrów tygodnia i
     time_t weekTime = schedule.getWeekStart();
     QDateTime dt;
     dt.setSecsSinceEpoch(weekTime);
@@ -48,7 +50,7 @@ void MainWindow::setSchedule(WeekSchedule &schedule)
 
     QStringList dayNames;
     QStringList dniTygodnia = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"};
-
+    // ustawienie dat dni
     for (int i = 0; i < 7; ++i) {
         QDate current = monday.addDays(i);
         QString header = dniTygodnia[i] + "\n" + current.toString("dd.MM.yyyy");
@@ -87,7 +89,7 @@ void MainWindow::update()
 {
     QMainWindow::update();
 }
-
+//TODO (sposob zeby sie nie wywalilo)
 ICalendarEntry* MainWindow::getSelectedEntry()
 {
     return nullptr;

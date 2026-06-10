@@ -8,10 +8,6 @@ WeekSchedule::WeekSchedule(time_t week)
     }
 }
 
-void WeekSchedule::fillSchedule()
-{
-}
-
 DaySchedule& WeekSchedule::getDay(int dayIndex)
 {
     return days[dayIndex];

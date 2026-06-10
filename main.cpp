@@ -3,6 +3,7 @@
 
 int main(int argc, char *argv[])
 {
+    // samo ustawianie glownych parametrow okna oraz wlaczanie calej aplikacji
     QApplication app(argc, argv);
 
     MainWindow win;

@@ -5,7 +5,6 @@ TEMPLATE = app
 CONFIG += c++17 console
 
 HEADERS += \
-    LessonInfo.h \
     LessonMerger.h \
     LessonTile.h \
     WeeklyCalendarWidget.h \
@@ -25,7 +24,6 @@ HEADERS += \
 SOURCES += \
     LessonMerger.cpp \
     main.cpp \
-    LessonInfo.cpp \
     LessonTile.cpp \
     WeeklyCalendarWidget.cpp \
     ILesson.cpp \
