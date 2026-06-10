@@ -108,6 +108,29 @@ void CalendarEngine::addLesson(std::shared_ptr<ILesson> lesson) {
     rebuildSchedule();
     updateWidget();
 }
+bool CalendarEngine::addLesson(std::shared_ptr<ILesson> lesson) {
+
+    // sprawdź konflikt ze wszystkimi istniejącymi lekcjami
+    for (const auto &existing : m_lessons) {
+        if (lesson->overlaps(*existing)) {
+            return false;
+        }
+    }
+
+    if (std::dynamic_pointer_cast<LessonStudent>(lesson)) {
+        m_studentLessons.push_back(lesson);
+        m_storage.saveStudentLessons(m_studentLessons);
+    }
+    else if (std::dynamic_pointer_cast<LessonUSOS>(lesson)) {
+        m_usosLessons.push_back(lesson);
+        m_storage.saveUsosLessons(m_usosLessons);
+    }
+
+    m_lessons = m_merger.mergeAndSort(m_studentLessons, m_usosLessons);
+    rebuildSchedule();
+    updateWidget();
+    return true;
+}
 
 //ogolnie to ta funkcje nizej i reszte tych zakomentowanych mozna wywalic bo sa useless i nie uzywamy ich nigdzie ======================
 

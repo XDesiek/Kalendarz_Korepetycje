@@ -41,6 +41,7 @@ public:
     void updateStudent(const Student &student);
     void updatePayment(const Payment &payment);
     void updateLesson(std::shared_ptr<ILesson> lesson);
+    bool addLesson(std::shared_ptr<ILesson> lesson);
 
     void updateWidget();
     void loadFromFile(const QString &path);

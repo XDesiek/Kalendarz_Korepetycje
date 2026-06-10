@@ -154,7 +154,11 @@ void MainWindow::on_btnDodajZajecia_clicked()
         noweIdLekcji, idUcznia, 0, timestamp, 60
         );
 
-    m_engine.addLesson(noweKorepetycje);
+    if (!m_engine.addLesson(noweKorepetycje)) {
+        QMessageBox::warning(this, "Błąd",
+                             "W tym terminie istnieje już inna lekcja!");
+        return;
+    }
 
     QMessageBox::information(this, "Sukces", "Dodano nowe zajęcia do kalendarza!");
 }
