@@ -217,3 +217,136 @@ QStringList CSVStorage::parseCsvLine(const QString &line) {
     fields.append(current);
     return fields;
 }
+
+QString CSVStorage::parseICSField(const QString &line, const QString &key) {
+    if (line.startsWith(key))
+        return line.mid(key.length()).trimmed();
+    return QString();
+}
+
+std::vector<std::shared_ptr<LessonUSOS>> CSVStorage::loadFromICS(const QString &filePath) {
+    std::vector<std::shared_ptr<LessonUSOS>> result;
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return result;
+    QTextStream in(&file);
+    in.setEncoding(QStringConverter::Utf8);
+
+    // sklejamy linie kontynuowane (ICS łamie długie linie przez spację na początku)
+    QStringList lines;
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (!line.isEmpty() && (line[0] == ' ' || line[0] == '\t')) {
+            // linia kontynuowana — doklejamy do poprzedniej
+            if (!lines.isEmpty())
+                lines.last() += line.trimmed();
+        } else {
+            lines.append(line.trimmed());
+        }
+    }
+
+    QString summary, dtstart, dtend, description;
+    bool inEvent = false;
+    int nextId = 1;
+
+    for (const QString &line : lines) {
+        if (line == "BEGIN:VEVENT") {
+            inEvent = true;
+            summary = dtstart = dtend = description = "";
+            continue;
+        }
+        if (line == "END:VEVENT") {
+            inEvent = false;
+
+            if (dtstart.isEmpty() || summary.isEmpty()) continue;
+
+            // parsuj datę i godzinę z formatu 20260610T101500
+            QString dt = dtstart;
+            if (dt.contains(":")) dt = dt.section(":", 1); // usuń "VALUE=DATE-TIME:"
+            // format: YYYYMMDDThhmmss
+            int year  = dt.mid(0, 4).toInt();
+            int month = dt.mid(4, 2).toInt();
+            int day   = dt.mid(6, 2).toInt();
+            int hour  = dt.mid(9, 2).toInt();
+            int min   = dt.mid(11, 2).toInt();
+            // czas trwania — obliczamy z surowych (niezaokrąglonych) czasów
+            int durationMin = 60; // domyślnie
+            if (!dtend.isEmpty()) {
+                QString de = dtend;
+                if (de.contains(":")) de = de.section(":", 1);
+                int ehour = de.mid(9, 2).toInt();
+                int emin  = de.mid(11, 2).toInt();
+                int rawStartMin = hour * 60 + min;
+                int rawEndMin   = ehour * 60 + emin;
+                int rawDuration = rawEndMin - rawStartMin;
+                if (rawDuration <= 0) rawDuration = 60;
+                // zaokrąglenie czasu trwania do pełnej godziny w górę
+                durationMin = ((rawDuration + 59) / 60) * 60;
+            }
+
+            // zaokrąglenie godziny rozpoczęcia do pełnej godziny
+            if (min >= 30) hour++;
+
+            // wyciągnij salę z DESCRIPTION
+            QString room;
+            int groupId = 0;
+
+            for (const QString &descLine : description.split("\\n")) {
+                QString dl = descLine.trimmed();
+                if (dl.startsWith("Sala:")) {
+                    room = dl.mid(5).trimmed();
+                    // NIE rób break — kontynuuj, żeby dojść do URL-a
+                }
+                // wyciągnij gr_nr z URL-a w DESCRIPTION
+                if (dl.contains("gr_nr=")) {
+                    int idx = dl.indexOf("gr_nr=");
+                    QString after = dl.mid(idx + 6); // pomiń "gr_nr="
+                    // gr_nr kończy się na "&" albo na końcu stringa
+                    int end = after.indexOf('&');
+                    QString grNrStr = (end != -1) ? after.left(end) : after;
+                    groupId = grNrStr.toInt();
+                }
+            }
+
+            // wyczyść SUMMARY — usuń prefix "WYK - ", "LAB - ", "PRO - " itp.
+            QString subjectName = summary;
+            // usuń prefix słownikowy (3 wielkie litery + " - ")
+            if (subjectName.length() > 5 &&
+                subjectName[3] == ' ' && subjectName[4] == '-') {
+                subjectName = subjectName.mid(6).trimmed();
+            }
+            // obsłuż format {'pl': '...', 'en': '...'}
+            if (subjectName.startsWith("{'pl':")) {
+                int start = subjectName.indexOf("'", 7) + 1;
+                int end   = subjectName.indexOf("'", start);
+                if (start > 0 && end > start)
+                    subjectName = subjectName.mid(start, end - start);
+            }
+
+            QDateTime lessonDT(QDate(year, month, day), QTime(hour, 0));
+            time_t ts = lessonDT.toSecsSinceEpoch();
+
+            auto lesson = std::make_shared<LessonUSOS>();
+            lesson->setId(nextId++);
+            lesson->setTimestamp(ts);
+            lesson->setDuration(durationMin);
+            lesson->setSubject(subjectName);
+            lesson->setRoomNumber(room);
+            lesson->setGroupId(groupId);
+            result.push_back(lesson);
+            continue;
+        }
+
+        if (!inEvent) continue;
+
+        if (line.startsWith("SUMMARY:"))
+            summary = line.mid(8);
+        else if (line.startsWith("DTSTART"))
+            dtstart = line.mid(line.indexOf(':') + 1);
+        else if (line.startsWith("DTEND"))
+            dtend = line.mid(line.indexOf(':') + 1);
+        else if (line.startsWith("DESCRIPTION:"))
+            description = line.mid(12);
+    }
+
+    return result;
+}

@@ -2,7 +2,7 @@
 #define LESSONUSOS_H
 
 #include "ILesson.h"
-
+// Reprezentuje zajęcia zaimportowane z planu USOS
 class LessonUSOS : public ILesson {
 public:
     LessonUSOS(int id, time_t timestamp, int duration,

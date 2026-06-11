@@ -2,29 +2,29 @@
 #define LESSONSTUDENT_H
 
 #include "ILesson.h"
-
+// Reprezentuje lekcję korepetycji z prywatnym uczniem
 class LessonStudent : public ILesson {
 public:
     LessonStudent(int id, int studentID, int paymentID,
                   time_t timestamp, int duration);
 
-    LessonStudent() {}
+    LessonStudent() {}// domyślny konstruktor potrzebny przy wczytywaniu z CSV
 
     QString getText() override;
     time_t getTime() override;
     bool checkIfPaid();
 
-    //Funkcje służące odczytu potrzebnych danych
+    // Gettery
     int getStudentId() const { return studentID; }
     int getPaymentId() const { return paymentID; }
 
-    //Funkcje służące wpisywania nowych danych do lekcji
+    // Settery
     void setStudentId(int v) { studentID = v; }
     void setPaymentId(int v) { paymentID = v; }
 
 private:
-    int studentID = 0;
-    int paymentID = 0;
+    int studentID = 0; // ID ucznia powiązanego z lekcją
+    int paymentID = 0; // ID płatności (0 = nieopłacona)
 };
 
 #endif

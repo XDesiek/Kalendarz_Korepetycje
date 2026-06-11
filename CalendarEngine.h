@@ -9,6 +9,7 @@
 #include "ILesson.h"
 #include "LessonMerger.h"
 
+
 #include <QString>
 #include <vector>
 #include <memory>
@@ -45,6 +46,7 @@ public:
 
     void updateWidget();
     void loadFromFile(const QString &path);
+
 
 private:
     //Listy przechowujące pobrane informacje z plików

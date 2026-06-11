@@ -19,7 +19,8 @@ HEADERS += \
     WeekSchedule.h \
     CalendarEngine.h \
     CSVStorage.h \
-    mainwindow.h
+    mainwindow.h \
+    LessonInfo.h
 
 SOURCES += \
     LessonMerger.cpp \

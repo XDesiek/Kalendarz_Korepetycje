@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 
     MainWindow win;
     win.setWindowTitle("System Zarządzania Korepetycjami");
-    win.resize(1200, 800);
+    win.resize(1200, 850);
     win.show();
 
     return app.exec();
