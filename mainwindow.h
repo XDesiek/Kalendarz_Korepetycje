@@ -10,7 +10,7 @@
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
-
+// Główne okno aplikacji — implementuje ICalendarView i obsługuje wszystkie akcje użytkownika
 class MainWindow : public QMainWindow, public ICalendarView
 {
     Q_OBJECT
@@ -18,10 +18,13 @@ class MainWindow : public QMainWindow, public ICalendarView
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    // Metody odświeżające listy w UI
     void odswiezListeUczniow();
     void odswiezListeLekcjiDoOplaty();
     void wypelnijGodziny();
+    // Implementacja interfejsu ICalendarView
     void setSchedule(WeekSchedule &schedule) override;
+    // aktualizuje widok kalendarza
     void update() override;
     ICalendarEntry* getSelectedEntry() override;
 
